@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Cosméticos y Más</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, sans-serif;
+      background: #f7faf8;
+      color: #222;
+      text-align: center;
+    }
+    .box { padding: 30px; }
+    .spinner {
+      width: 42px;
+      height: 42px;
+      margin: 0 auto 18px;
+      border: 4px solid #dcefe3;
+      border-top-color: #25D366;
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+    p { color: #66706a; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="spinner"></div>
+    <strong>Conectando con una asesora...</strong>
+    <p>Un momento, por favor.</p>
+  </div>
+
+  <script>
+    const whatsappLinks = [
+      "https://wa.link/cosmeticosymassv",
+      "https://wa.link/asesoramary",
+      "https://wa.link/asesorahaydee"
+    ];
+
+    // Elige una de las 3 asesoras al azar, con la misma probabilidad.
+    const selected = whatsappLinks[Math.floor(Math.random() * whatsappLinks.length)];
+
+    // Redirección automática.
+    window.location.replace(selected);
+  </script>
+</body>
+</html>
