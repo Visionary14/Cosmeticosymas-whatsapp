@@ -3,53 +3,123 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="noindex,nofollow">
   <title>Cosméticos y Más</title>
+
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      background: #f8f8f8;
       font-family: Arial, sans-serif;
-      background: #f7faf8;
       color: #222;
+    }
+
+    .contenedor {
       text-align: center;
+      padding: 30px;
     }
-    .box { padding: 30px; }
-    .spinner {
-      width: 42px;
-      height: 42px;
-      margin: 0 auto 18px;
-      border: 4px solid #dcefe3;
-      border-top-color: #25D366;
+
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .mensaje {
+      font-size: 16px;
+      color: #666;
+    }
+
+    .cargando {
+      width: 35px;
+      height: 35px;
+      margin: 25px auto;
+      border: 4px solid #ddd;
+      border-top: 4px solid #222;
       border-radius: 50%;
-      animation: spin .8s linear infinite;
+      animation: girar 0.8s linear infinite;
     }
-    p { color: #66706a; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @keyframes girar {
+      to {
+        transform: rotate(360deg);
+      }
+    }
   </style>
 </head>
+
 <body>
-  <div class="box">
-    <div class="spinner"></div>
-    <strong>Conectando con una asesora...</strong>
-    <p>Un momento, por favor.</p>
+
+  <div class="contenedor">
+    <div class="logo">Cosméticos y Más</div>
+    <div class="cargando"></div>
+    <div class="mensaje">
+      Conectándote con una asesora...
+    </div>
   </div>
 
   <script>
-    const whatsappLinks = [
-      "https://wa.link/cosmeticosymassv",
-      "https://wa.link/asesoramary",
-      "https://wa.link/asesorahaydee"
-    ];
+    const SUPABASE_URL = "https://bshnjamgshvlholwqyns.supabase.co";
 
-    // Elige una de las 3 asesoras al azar, con la misma probabilidad.
-    const selected = whatsappLinks[Math.floor(Math.random() * whatsappLinks.length)];
+    const SUPABASE_KEY =
+      "sb_publishable_VYEl6yKyg64tP6MGF8LA_A_Orb6dLHP";
 
-    // Redirección automática.
-    window.location.replace(selected);
+    async function asignarAsesora() {
+
+      try {
+
+        const respuesta = await fetch(
+          `${SUPABASE_URL}/rest/v1/rpc/asignar_asesora`,
+          {
+            method: "POST",
+
+            headers: {
+              "apikey": SUPABASE_KEY,
+              "Authorization": `Bearer ${SUPABASE_KEY}`,
+              "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({})
+          }
+        );
+
+        if (!respuesta.ok) {
+          throw new Error(
+            `Error de Supabase: ${respuesta.status}`
+          );
+        }
+
+        const asesora = await respuesta.json();
+
+        console.log("Asesora asignada:", asesora);
+
+        if (!asesora || !asesora.whatsapp) {
+          throw new Error("No se recibió un enlace de WhatsApp.");
+        }
+
+        // Redirección automática
+        window.location.replace(asesora.whatsapp);
+
+      } catch (error) {
+
+        console.error(error);
+
+        document.querySelector(".mensaje").textContent =
+          "No pudimos conectarte automáticamente. Intenta nuevamente.";
+
+        document.querySelector(".cargando").style.display = "none";
+      }
+    }
+
+    asignarAsesora();
   </script>
+
 </body>
 </html>
